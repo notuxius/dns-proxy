@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+    web:
+        build: .
+        command: python ./dns_proxy_server.py
+        container_name: dns_proxy_server
+        ports:
+            - "53:53"

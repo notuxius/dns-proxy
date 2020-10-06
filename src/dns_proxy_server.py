@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+import os
 import time
 
 from dnslib import RR, A
@@ -31,7 +32,8 @@ class SubProxy(ProxyResolver):
 
 
 def main():
-    with open("config.json") as conf_file:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(dir_path, "config.json")) as conf_file:
         conf = json.load(conf_file)
 
     resolver = SubProxy(

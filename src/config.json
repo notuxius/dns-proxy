@@ -4,7 +4,7 @@
     "port": 53,
     "upper_dns": "8.8.8.8",
     "blacklist": [
-        "nresolv.com"
+        "google.nres"
     ],
     "answer": "Not Resolved"
 }
