@@ -2,6 +2,7 @@
 
 import json
 import time
+
 from dnslib import RR, A
 from dnslib.proxy import ProxyResolver
 from dnslib.server import DNSServer
@@ -16,8 +17,8 @@ class SubProxy(ProxyResolver):
 
     def resolve(self, request, handler):
         print(request.q.qname)
-        if request.q.qname in self.blacklist:
 
+        if request.q.qname in self.blacklist:
             answer = RR(rdata=A(self.host))
             answer.set_rname(self.answer)
             reply = request.reply()
@@ -32,7 +33,6 @@ class SubProxy(ProxyResolver):
 def main():
     with open("config.json") as conf_file:
         conf = json.load(conf_file)
-        conf_file.close()
 
     resolver = SubProxy(
         address=conf["upper_dns"],
@@ -44,7 +44,6 @@ def main():
     )
 
     server = DNSServer(resolver, port=conf["port"], address=conf["host"])
-
     server.start_thread()
 
     while server.isAlive():
