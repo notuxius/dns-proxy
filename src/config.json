@@ -1,6 +1,6 @@
 {
     "socket_timeout": 20,
-    "host": "127.0.0.250",
+    "host": "127.0.0.53",
     "port": 53,
     "upper_dns": "8.8.8.8",
     "blacklist": [

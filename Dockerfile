@@ -3,4 +3,5 @@ WORKDIR /code
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY src/ .
-RUN apt update && apt install dnsutils -y
+RUN apt-get update && apt-get install dnsutils -y
+EXPOSE 53
