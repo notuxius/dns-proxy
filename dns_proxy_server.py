@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-
 import json
+import time
 from dnslib import RR, A
 from dnslib.proxy import ProxyResolver
 from dnslib.server import DNSServer
@@ -15,38 +15,41 @@ class SubProxy(ProxyResolver):
         self.host = host
 
     def resolve(self, request, handler):
+        print(request.q.qname)
         if request.q.qname in self.blacklist:
-            # print(request.q.qname)
+
             answer = RR(rdata=A(self.host))
             answer.set_rname(self.answer)
             reply = request.reply()
             reply.add_answer(answer)
-            # print(reply)
-            # print('-' * 200)
+            print(reply)
+            print("-" * 200)
             return reply
-        else:
-            return ProxyResolver.resolve(self, request, handler)
+
+        return ProxyResolver.resolve(self, request, handler)
 
 
-if __name__ == '__main__':
-    import time
+def main():
+    with open("config.json") as conf_file:
+        conf = json.load(conf_file)
+        conf_file.close()
 
-    conf_file = open('config.json')
-    conf = json.load(conf_file)
-    conf_file.close()
+    resolver = SubProxy(
+        address=conf["upper_dns"],
+        port=conf["port"],
+        timeout=conf["socket_timeout"],
+        b_list=conf["blacklist"],
+        answer=conf["answer"],
+        host=conf["host"],
+    )
 
-    resolver = SubProxy(address=conf['upper_dns'],
-                        port=conf['port'],
-                        timeout=conf['socket_timeout'],
-                        b_list=conf['blacklist'],
-                        answer=conf['answer'],
-                        host=conf['host'])
- 
-    server = DNSServer(resolver,
-                       port=conf['port'],
-                       address=conf['host'])
-    
+    server = DNSServer(resolver, port=conf["port"], address=conf["host"])
+
     server.start_thread()
 
     while server.isAlive():
         time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
